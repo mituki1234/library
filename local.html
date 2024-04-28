@@ -58,6 +58,8 @@
             width: 80%;
             height: 50px;
             margin: 5px auto;
+            color: white;
+            font-size: 200%;
         }
         .messagetext{
             font-size: 200%;
@@ -196,15 +198,10 @@
         }
         function message(text,color){
             var input = document.getElementById("message");
-            var newP = document.createElement("p");
             var deleteP = input.firstElementChild;
 
-            newP.innerText = text;
-            newP.classList.add('messagetext');
+            input.innerText = text;
 
-            if(deleteP.className == "messagetext"){
-                deleteP.removeChild("messagetext");
-            }
             if(color == "green"){
                 input.classList.remove('red');
                 input.classList.remove('green');
@@ -215,7 +212,6 @@
                 input.classList.add('red');
             }
 
-            input.appendChild(newP);
         }
     </script>
 </html>
