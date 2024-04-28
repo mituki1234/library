@@ -1,0 +1,166 @@
+<html>
+    <head>
+        <meta lang="en">
+        <title>貸出状況</title>
+    </head>
+    <style>
+        #main{
+            margin: auto;
+            width: 80%;
+            height: auto;
+            min-height: 30px;
+            display: flex;
+            border: 2px solid #a7a7a7;
+        }
+        #inputarea{
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #nameinput{
+            height: 5%;
+            width: 30%;
+            font-size: 100%;
+        }
+        #booknameinput{
+            height: 5%;
+            width: 30%;
+            font-size: 100%;
+        }
+        #name{
+            width: 40%;
+            height: 80%;
+            background-color: white;
+        }
+        #bookname{
+            width: 40%;
+            height: 80%;
+        }
+        #deadline{
+            width: 20%;
+            height: 80%;
+            background-color: lightgreen;
+            margin-top: 25px;
+        }
+        #send{
+            height: 5%;
+        }
+        .nametext{
+            width: 100%;
+            font-size: 100%;
+            text-align: center;
+            margin: 0;
+        }
+        .deadline{
+            
+        }
+    </style>
+    <body>
+        <div id="inputarea">
+            <input type="search" id="nameinput" value="">
+            <input type="text" id="booknameinput">
+            <button id="sendbtn">入力を確定</button>
+        </div>
+        <div id="main">
+            <div id="name">
+                <p class="nametext">本の名前</p>
+            </div>
+            <div id="bookname">
+                <p class="nametext">人の名前</p>
+            </div>
+            <div id="deadline">
+            </div>
+        </div>
+    </body>
+    <script>
+        const sendbtn = document.getElementById("sendbtn");
+        const getname = JSON.parse(localStorage.getItem('name'));
+        const getbookname = JSON.parse(localStorage.getItem('bookname'));
+        const ddlecheck = JSON.parse(localStorage.getItem('ddle'));
+
+        let name ;
+        let bookname ;
+        let ddlename = [];
+
+        if(!(getname == null) && !(getbookname == null)){
+            name = getname;
+            bookname = getbookname;
+            ddlename = ddlecheck;
+            for(i=0;i < name.length;i++){
+                setupList("bookname",name[i]);
+                setupList("name",bookname[i]);
+                setupList("deadline",ddlename[i]);
+            }
+            createList("name","nameinput");
+            createList("bookname","booknameinput");
+        } else {
+            name = [];
+            bookname = [];
+            ddlename = [];
+        }
+        sendbtn.addEventListener('click',() =>{
+            var checkbook = document.getElementById("nameinput").value;
+            var checkname = document.getElementById("booknameinput").value;
+            if(!(checkbook == '') && !(checkname == ''))
+            {
+                var checkdupe = 0;
+                /* dupe = 重複です */
+                for(i=0;i < name.length;i++){
+                    if(checkbook == bookname[i]){
+                        checkdupe = 1;
+                        alert("この本は誰かが借りています");
+                        break;
+                    }
+                }
+                if(checkdupe == 0){
+                    createList("name","nameinput");
+                    createList("bookname","booknameinput");
+
+                    var dt = new Date();
+                    dt.setDate(dt.getDate() + 10)
+                    var ddle = dt.getMonth() + 1 + "/" + dt.getDate();
+
+                    setupList("deadline",ddle);
+
+                    name.push(checkname);
+                    bookname.push(checkbook);
+                    ddlename.push(ddle);
+
+                    localStorage.removeItem("name")
+                    localStorage.setItem("name",JSON.stringify(name));
+                    localStorage.removeItem("ddle")
+                    localStorage.setItem("ddle",JSON.stringify(ddlename));
+                    localStorage.removeItem("bookname")
+                    localStorage.setItem("bookname",JSON.stringify(bookname)); 
+                }
+            } else if(checkbook == ''){
+                alert("本の名前が入力されていません");
+            } else if(checkname == ''){
+                alert("借りる人の名前が入力されていません。");
+            } else {
+                alert("エラー");
+            }
+        },false)
+        function createList(parent,inputa){
+            var input = document.getElementById(parent);
+            
+            var newP = document.createElement("p");
+
+            newP.innerText = document.getElementById(inputa).value;
+
+            newP.classList.add('nametext');
+
+            input.appendChild(newP);
+        }
+        function setupList(parent,text){
+            var input = document.getElementById(parent);
+
+            var newP = document.createElement("p");
+
+            newP.innerText = text;
+
+            newP.classList.add('nametext');
+
+            input.appendChild(newP);
+        }
+    </script>
+</html>
