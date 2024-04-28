@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta lang="ja">
+        <meta charset="UTF-8">
         <title>貸出状況</title>
     </head>
     <style>
+        html{
+            font-family: sans-serif;
+        }
         #main{
             margin: auto;
             width: 80%;
@@ -51,6 +54,20 @@
             text-align: center;
             margin: 0;
         }
+        #message{
+            width: 80%;
+            height: 50px;
+            margin: 5px auto;
+        }
+        .messagetext{
+            font-size: 200%;
+        }
+        .red{
+            background: lightcoral;
+        }
+        .green{
+            background: lightgreen;
+        }
         .deadline{
             
         }
@@ -71,8 +88,11 @@
             <div id="deadline">
             </div>
         </div>
+        <div id="message"></div>
     </body>
     <script>
+        localStorage.clear();
+        /* あとでコメントアウトしてください */
         const sendbtn = document.getElementById("sendbtn");
         const getname = JSON.parse(localStorage.getItem('name'));
         const getbookname = JSON.parse(localStorage.getItem('bookname'));
@@ -104,11 +124,20 @@
             if(!(checkbook == '') && !(checkname == ''))
             {
                 var checkdupe = 0;
+                var checkdupename = 0;
                 /* dupe = 重複です */
                 for(i=0;i < name.length;i++){
                     if(checkbook == bookname[i]){
                         checkdupe = 1;
                         alert("この本は誰かが借りています");
+                        break;
+                    }
+                    if(checkname == name[i]){
+                        checkdupename++;
+                    }
+                    if(checkdupename == 3){
+                        checkdupe = 1;
+                        alert("この人はすでに三冊本を借りています。");
                         break;
                     }
                 }
@@ -135,10 +164,12 @@
                 }
             } else if(checkbook == ''){
                 alert("本の名前が入力されていません");
+                message("aaa","green")
             } else if(checkname == ''){
                 alert("借りる人の名前が入力されていません。");
+                message("error",0);
             } else {
-                alert("エラー");
+                alert("エラー　柳瀬みつきに伝えてください。");
             }
         },false)
         function createList(parent,inputa){
@@ -152,7 +183,7 @@
 
             input.appendChild(newP);
         }
-        function setupList(parent,text){
+        function SetupList(parent,text){
             var input = document.getElementById(parent);
 
             var newP = document.createElement("p");
@@ -160,6 +191,29 @@
             newP.innerText = text;
 
             newP.classList.add('nametext');
+
+            input.appendChild(newP);
+        }
+        function message(text,color){
+            var input = document.getElementById("message");
+            var newP = document.createElement("p");
+            var deleteP = input.firstElementChild;
+
+            newP.innerText = text;
+            newP.classList.add('messagetext');
+
+            if(deleteP.className == "messagetext"){
+                deleteP.removeChild("messagetext");
+            }
+            if(color == "green"){
+                input.classList.remove('red');
+                input.classList.remove('green');
+                input.classList.add('green');
+            } else {
+                input.classList.remove('green');
+                input.classList.remove('red');
+                input.classList.add('red');
+            }
 
             input.appendChild(newP);
         }
